@@ -1,11 +1,8 @@
 'use strict';
 
-const div = document.createElement('div');
 const body = document.body;
 let leftClicked = false;
 let rightClicked = false;
-
-div.setAttribute('data-qa', 'notificatio');
 
 function promOne(params) {
   const firstPromise = new Promise((resolve, reject) => {
@@ -26,12 +23,19 @@ function promOne(params) {
 async function promFirst() {
   try {
     const dataOne = await promOne();
+    const div = document.createElement('div');
+
+    div.setAttribute('data-qa', 'notification');
 
     div.textContent = dataOne;
     div.classList.add('success');
 
     body.append(div);
   } catch (error) {
+    const div = document.createElement('div');
+
+    div.setAttribute('data-qa', 'notification');
+
     div.textContent = error.message;
     div.classList.add('error');
 
@@ -56,6 +60,9 @@ function promTwo(params) {
 
 async function promSecond() {
   const dataTwo = await promTwo();
+  const div = document.createElement('div');
+
+  div.setAttribute('data-qa', 'notification');
 
   div.textContent = dataTwo;
   div.classList.add('success');
@@ -68,17 +75,21 @@ function promThree(params) {
   const thirdPromise = new Promise((resolve, reject) => {
     body.addEventListener('click', () => {
       leftClicked = true;
+
+      if (leftClicked && rightClicked) {
+        resolve('Third promise was resolved');
+      }
     });
 
     body.addEventListener('contextmenu', (ev) => {
       ev.preventDefault();
 
       rightClicked = true;
-    });
 
-    if (leftClicked && rightClicked) {
-      resolve('Third promise was resolved');
-    }
+      if (leftClicked && rightClicked) {
+        resolve('Third promise was resolved');
+      }
+    });
   });
 
   return thirdPromise;
@@ -87,12 +98,19 @@ function promThree(params) {
 async function promThird() {
   try {
     const dataThree = await promThree();
+    const div = document.createElement('div');
+
+    div.setAttribute('data-qa', 'notification');
 
     div.textContent = dataThree;
     div.classList.add('success');
 
     body.append(div);
   } catch (error) {
+    const div = document.createElement('div');
+
+    div.setAttribute('data-qa', 'notification');
+
     div.classList.add('error');
   }
 }
