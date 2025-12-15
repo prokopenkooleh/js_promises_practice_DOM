@@ -4,17 +4,21 @@ const body = document.body;
 let leftClicked = false;
 let rightClicked = false;
 
-function promOne(params) {
+function promOne() {
   const firstPromise = new Promise((resolve, reject) => {
     const timeoutId = setTimeout(() => {
       reject(new Error('First promise was rejected'));
     }, 3000);
 
-    document.addEventListener('click', () => {
-      clearTimeout(timeoutId);
+    document.addEventListener(
+      'click',
+      () => {
+        clearTimeout(timeoutId);
 
-      resolve('First promise was resolved');
-    });
+        resolve('First promise was resolved');
+      },
+      { once: true },
+    );
   });
 
   return firstPromise;
@@ -44,52 +48,77 @@ async function promFirst() {
 }
 promFirst();
 
-function promTwo(params) {
+function promTwo() {
   const secondPromise = new Promise((resolve) => {
-    body.addEventListener('click', () => {
-      resolve('Second promise was resolved');
-    });
+    body.addEventListener(
+      'click',
+      () => {
+        resolve('Second promise was resolved');
+      },
+      { once: true },
+    );
 
-    body.addEventListener('contextmenu', () => {
-      resolve('Second promise was resolved');
-    });
+    body.addEventListener(
+      'contextmenu',
+      () => {
+        resolve('Second promise was resolved');
+      },
+      { once: true },
+    );
   });
 
   return secondPromise;
 }
 
 async function promSecond() {
-  const dataTwo = await promTwo();
-  const div = document.createElement('div');
+  try {
+    const dataTwo = await promTwo();
+    const div = document.createElement('div');
 
-  div.setAttribute('data-qa', 'notification');
+    div.setAttribute('data-qa', 'notification');
 
-  div.textContent = dataTwo;
-  div.classList.add('success');
+    div.textContent = dataTwo;
+    div.classList.add('success');
 
-  body.append(div);
+    body.append(div);
+  } catch (error) {
+    const div = document.createElement('div');
+
+    div.setAttribute('data-qa', 'notification');
+
+    div.textContent = error;
+    div.classList.add('error');
+  }
 }
 promSecond();
 
 function promThree(params) {
   const thirdPromise = new Promise((resolve, reject) => {
-    body.addEventListener('click', () => {
-      leftClicked = true;
+    body.addEventListener(
+      'click',
+      () => {
+        leftClicked = true;
 
-      if (leftClicked && rightClicked) {
-        resolve('Third promise was resolved');
-      }
-    });
+        if (leftClicked && rightClicked) {
+          resolve('Third promise was resolved');
+        }
+      },
+      { once: true },
+    );
 
-    body.addEventListener('contextmenu', (ev) => {
-      ev.preventDefault();
+    body.addEventListener(
+      'contextmenu',
+      (ev) => {
+        ev.preventDefault();
 
-      rightClicked = true;
+        rightClicked = true;
 
-      if (leftClicked && rightClicked) {
-        resolve('Third promise was resolved');
-      }
-    });
+        if (leftClicked && rightClicked) {
+          resolve('Third promise was resolved');
+        }
+      },
+      { once: true },
+    );
   });
 
   return thirdPromise;
